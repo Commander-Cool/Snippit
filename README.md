@@ -1,0 +1,2 @@
+# Snippit
+Chrome Clipper Extension
