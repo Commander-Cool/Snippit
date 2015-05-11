@@ -8,7 +8,7 @@ function pasteSelection() {
     function(response){
       var text = document.getElementById('text'); 
       text.innerHTML = response.data;
-      console.log("clicked");
+      console.log(response.data);
     });
   });
 }
@@ -21,7 +21,7 @@ function addnew(){
 	var body = document.getElementById('body');
 	var textarea = document.createElement('textarea');
 	textarea.id = "text";
-	var paste = document.createElement('button');
+	var paste = document. createElement('button');
 	var text = document.createTextNode("Paste Selection");
 	paste.appendChild(text)
 	paste.id = "paste";
