@@ -1,12 +1,12 @@
 {
  "name": "Snippit",
- "version": "0.1",
- "description": "Selected Text",
+ "version": "1.0",
+ "description": "Chrome Clipboard Extension",
  "manifest_version": 2,
  "browser_action": {
    "default_title": "Snippit",
-   "default_icon": "on.png",
-   "default_popup": "popup.html" 
+   "default_icon": "icon.png",
+   "default_popup": "app.html" 
  },
  "permissions": [
    "tabs",
@@ -17,7 +17,7 @@
  "content_scripts": [
    {
      "matches": ["<all_urls>"],
-     "js": ["selection.js"],
+     "js": ["js/listeners.js"],
      "run_at": "document_start",
      "all_frames": true
    }
