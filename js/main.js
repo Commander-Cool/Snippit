@@ -28,7 +28,7 @@ function pasteSelection(bid) {
       }
     });
   });
-  // addnew();
+  addnew();
 }
 
 function putTitle(bid){
@@ -41,8 +41,7 @@ function putTitle(bid){
 
 // Add new paste box
 function addnew(){
-  boxes+=1; 
-  // document.getElementById("paste").setAttribute("class", "list-group-item grab data");
+  boxes+=1;
   var button = document.createElement("BUTTON");
   button.setAttribute("class","list-group-item grab")
   button.id = boxes.toString();
@@ -56,4 +55,12 @@ function addnew(){
   button.appendChild(p);
   button.appendChild(p2);
   document.getElementById("snippits").appendChild(button);
+}
+
+function store(bid, value){
+  bid = bid.toString();
+  value = JSON.stringify(value);
+  chrome.storage.local.set({bid: value}, function (result) {
+    return;
+  }); 
 }
