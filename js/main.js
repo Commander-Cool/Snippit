@@ -30,6 +30,7 @@ function setText(bid) {
     });
   });
   textData = text;
+  store(bid);
   addnew(bid);
 }
 
@@ -38,7 +39,6 @@ function setTitle(bid){
   chrome.tabs.query({currentWindow: true, active: true}, function(tabs){
     p1.innerHTML = "<b>" + tabs[0].title + "</b>";
     title = tabs[0].title;
-    console.log(title);
   });
 }
 
@@ -60,14 +60,11 @@ function addnew(bid){
     button.appendChild(p);
     button.appendChild(p2);
     document.getElementById("snippits").appendChild(button);
-    console.log([title, textData][0]);
   }
 }
 
 function store(bid){
   var snip = JSON.stringify(getSnippit(bid));
   bid = bid.toString();
-  chrome.storage.sync.set({bid: snip}, function (result) {
-    return;
-  }); 
+  localStorage.setItem(bid, snip);
 }
