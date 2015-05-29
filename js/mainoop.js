@@ -1,76 +1,90 @@
 var boxes = 0;
 var snippits = {};
 
-$(function(){
-  $(document).on('click','.grab', function(){setText(this.id)});
+$(document).ready(function() {
+  addNew(boxes);
 });
 
 $(function(){
-  $('#addnew').click(function(){addnew();});
+  $(document).on('click','.grab', function(){set(snippits[this.id])});
 });
 
-function Snippit(id){
-	document.getElementById("snippits").appendChild(button);
-	var snippit   = Object.create(Snippit.prototype);
+function Snippit(bid){
+	var snippit = Object.create(Snippit.prototype);
 	snippit.title = "<b>Click To Paste</b>"
-	snippit.data  = "";
-	snippit.id 	  = id;
+	snippit.content = "";
+	snippit.bid = bid;
 	return snippit;
 };
 
 Snippit.prototype.setTitle = function (){
-	var p1 = document.getElementById("title".concat(this.id));
-  	chrome.tabs.query({currentWindow: true, active: true}, function(tabs){
-  		this.title = tabs[0].title;
-    	p1.innerHTML = "<b>" + this.title + "</b>";
-  	});
-  	setText();
+  chrome.tabs.query({currentWindow: true, active: true}, function(tabs){
+    this.title = tabs[0].title;
+      p1.innerHTML = "<b>" + this.title + "</b>";
+  });
+};
+
+Snippit.prototype.setTitle = function (){
+  var callback = function(tabs) {
+    var p1 = document.getElementById("title".concat(this.bid));
+    this.title = tabs[0].title;
+    p1.innerHTML = "<b>" + this.title + "</b>";
+  }
+  chrome.tabs.query({currentWindow: true, active: true}, callback.bind(this));
 };
 
 Snippit.prototype.setText = function (){
-  	var text = document.getElementById("data".concat(this.id));
-  	chrome.tabs.query({active:true, windowId: chrome.windows.WINDOW_ID_CURRENT}, 
+  	var text = document.getElementById("data".concat(this.bid));
+  	var self = this;
+    chrome.tabs.query({active:true, windowId: chrome.windows.WINDOW_ID_CURRENT}, 
   	function(tab){
     	chrome.tabs.sendMessage(tab[0].id, {method: "getSelection"}, 
     	function(response){
       		if (response.data == null){
         		chrome.tabs.query({currentWindow: true, active: true}, function(tabs){
-        		this.data = tabs[0].url;
+        		  self.content = tabs[0].url;
+              text.innerHTML = self.content;
         	});
       		}else{
-      			this.data = response.data;
+      			self.content = response.data;
+            text.innerHTML = self.content;
       		}
     	});
   	});
-  	text.innerHTML = this.data;
 };
 
 function createButton(snippit){
 	var button = document.createElement("BUTTON");
-    button.setAttribute("class","list-group-item grab")
-    button.id = snippit.id.toString();
-    var p = document.createElement("p");
-    p.setAttribute("class", "list-group-item-heading pull-left data");
-    p.innerHTML = snippit.title;
-    p.id = "title".concat(snippit.id.toString());
-    var p2 = document.createElement("p");
-    p2.setAttribute("class", "list-group-item-text pull-left data");
-    p2.id = "data".concat(snippit.id.toString());
-    button.appendChild(p);
-    button.appendChild(p2);
+  button.setAttribute("class","list-group-item grab")
+  button.id = boxes;
+  var p = document.createElement("p");
+  p.setAttribute("class", "list-group-item-heading pull-left data");
+  p.innerHTML = snippit.title;
+  p.id = "title".concat(snippit.bid.toString());
+  var p2 = document.createElement("p");
+  p2.setAttribute("class", "list-group-item-text pull-left data");
+  p2.id = "data".concat(snippit.bid.toString());
+  button.appendChild(p);
+  button.appendChild(p2);
+  document.getElementById("snippits").appendChild(button);
 };
 
 function addNew(id){
 	if (id < boxes){
 		return;
 	}else{
-		boxes+=1;
 		snippits[boxes] = new Snippit(boxes);
+		createButton(snippits[boxes]);
+		boxes+=1;
 	};
 };
 
-function store(Snippit){
-  var snip = JSON.stringify(getSnippit(bid));
-  bid = bid.toString();
-  localStorage.setItem(bid, snip);
+function set(snippit){
+  snippit.setTitle();
+  snippit.setText();
+  console.log(snippit);
+} 
+
+function store(){
+  
 }

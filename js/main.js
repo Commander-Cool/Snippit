@@ -10,6 +10,8 @@ $(function(){
   $('#addnew').click(function(){addnew(boxes);});
 });
 
+
+
 // ========= Functions
 
 // Get selected text and paste
