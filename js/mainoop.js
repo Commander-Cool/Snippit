@@ -6,7 +6,11 @@ $(document).ready(function() {
 });
 
 $(function(){
-  $(document).on('click','.grab', function(){set(snippits[this.id])});
+  $(document).on('click','.grab',
+    function(){
+      set(snippits[this.id]);
+    }
+  );
 });
 
 function Snippit(bid){
@@ -34,23 +38,23 @@ Snippit.prototype.setTitle = function (){
 };
 
 Snippit.prototype.setText = function (){
-  	var text = document.getElementById("data".concat(this.bid));
-  	var self = this;
-    chrome.tabs.query({active:true, windowId: chrome.windows.WINDOW_ID_CURRENT}, 
-  	function(tab){
-    	chrome.tabs.sendMessage(tab[0].id, {method: "getSelection"}, 
-    	function(response){
-      		if (response.data == null){
-        		chrome.tabs.query({currentWindow: true, active: true}, function(tabs){
-        		  self.content = tabs[0].url;
-              text.innerHTML = self.content;
-        	});
-      		}else{
-      			self.content = response.data;
-            text.innerHTML = self.content;
-      		}
-    	});
-  	});
+  var text = document.getElementById("data".concat(this.bid));
+  var self = this;
+  chrome.tabs.query({active:true, windowId: chrome.windows.WINDOW_ID_CURRENT},
+  function(tab){
+    chrome.tabs.sendMessage(tab[0].id, {method: "getSelection"},
+    function(response){
+      if (response.data == null){
+        chrome.tabs.query({currentWindow: true, active: true}, function(tabs){
+        self.content = tabs[0].url;
+        text.innerHTML = self.content;
+      });
+      }else{
+      	self.content = response.data;
+        text.innerHTML = self.content;
+      }
+    });
+  });
 };
 
 function createButton(snippit){
@@ -82,9 +86,10 @@ function addNew(id){
 function set(snippit){
   snippit.setTitle();
   snippit.setText();
-  console.log(snippit);
-} 
+  addNew(snippit.bid + 1);
+  window.setTimeout(function(){store(snippit);}, 20) //15
+}
 
-function store(){
-  
+function store(snippit){
+  localStorage.setItem(snippit.bid, JSON.stringify(snippit));
 }
