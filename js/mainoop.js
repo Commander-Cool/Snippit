@@ -2,7 +2,13 @@ var boxes = 0;
 var snippits = {};
 
 $(document).ready(function() {
-  addNew(boxes);
+  if (localStorage.getItem(0) == null){
+    addNew(boxes);
+  }else{
+    var snip = JSON.parse(localStorage.getItem(boxes));
+    snip = new Snippit(boxes)
+    snip
+  }
 });
 
 $(function(){
@@ -21,23 +27,21 @@ function Snippit(bid){
 	return snippit;
 };
 
-Snippit.prototype.setTitle = function (){
-  chrome.tabs.query({currentWindow: true, active: true}, function(tabs){
-    this.title = tabs[0].title;
-      p1.innerHTML = "<b>" + this.title + "</b>";
-  });
-};
-
-Snippit.prototype.setTitle = function (){
-  var callback = function(tabs) {
-    var p1 = document.getElementById("title".concat(this.bid));
-    this.title = tabs[0].title;
-    p1.innerHTML = "<b>" + this.title + "</b>";
+Snippit.prototype.setTitle = function (status){
+  var p1 = document.getElementById("title".concat(this.bid));
+  if (status){
+    
   }
-  chrome.tabs.query({currentWindow: true, active: true}, callback.bind(this));
+  else{
+    var callback = function(tabs) {
+      this.title = tabs[0].title;
+      p1.innerHTML = "<b>" + this.title + "</b>";
+    }
+    chrome.tabs.query({currentWindow: true, active: true}, callback.bind(this));
+    }
 };
 
-Snippit.prototype.setText = function (){
+Snippit.prototype.setText = function (status){
   var text = document.getElementById("data".concat(this.bid));
   var self = this;
   chrome.tabs.query({active:true, windowId: chrome.windows.WINDOW_ID_CURRENT},
@@ -87,7 +91,7 @@ function set(snippit){
   snippit.setTitle();
   snippit.setText();
   addNew(snippit.bid + 1);
-  window.setTimeout(function(){store(snippit);}, 20) //15
+  window.setTimeout(function(){store(snippit);}, 1000) //15
 }
 
 function store(snippit){
